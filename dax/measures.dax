@@ -1,0 +1,35 @@
+// Paste each measure separately into Power BI Desktop: Modeling > New measure.
+// Tables: FactFeedback, FactOperations, DimShop, DimDate. Use month/year filters for cross-fact comparison.
+
+Total Feedback = COUNTROWS(FactFeedback)
+
+Total Complaints = CALCULATE([Total Feedback], FactFeedback[feedback_type] = "Complaint")
+
+Compliment Count = CALCULATE([Total Feedback], FactFeedback[feedback_type] = "Compliment")
+
+Average CSAT = AVERAGE(FactFeedback[csat_score])
+
+Negative Feedback % = DIVIDE([Total Complaints], [Total Feedback])
+
+Total Transactions = SUM(FactOperations[transactions])
+
+Complaints per 1K Transactions = DIVIDE([Total Complaints], [Total Transactions]) * 1000
+
+Feedback per 1K Transactions = DIVIDE([Total Feedback], [Total Transactions]) * 1000
+
+Resolved Complaints = CALCULATE([Total Complaints], FactFeedback[resolution_status] = "Closed")
+
+Complaint Resolution % = DIVIDE([Resolved Complaints], [Total Complaints])
+
+Average Resolved Complaint Hours = CALCULATE(AVERAGE(FactFeedback[resolution_hours]), FactFeedback[feedback_type] = "Complaint", FactFeedback[resolution_status] = "Closed")
+
+Average Queue Minutes = DIVIDE(SUMX(FactOperations, FactOperations[avg_queue_minutes] * FactOperations[transactions]), [Total Transactions])
+
+Stock Availability % = DIVIDE(SUMX(FactOperations, FactOperations[stock_availability_pct] * FactOperations[transactions]), [Total Transactions])
+
+Complaints Prior Month = CALCULATE([Total Complaints], DATEADD(DimDate[Date], -1, MONTH))
+
+Complaints MoM % = DIVIDE([Total Complaints] - [Complaints Prior Month], [Complaints Prior Month])
+
+// Calculated table (Modeling > New table). In Power Query set date fields to Date.
+DimDate = ADDCOLUMNS(CALENDAR(DATE(2025,10,1),DATE(2026,9,30)), "Year", YEAR([Date]), "Month Number", MONTH([Date]), "Month Name", FORMAT([Date], "MMM"), "YearMonth", FORMAT([Date], "yyyy-MM"), "MonthStart", DATE(YEAR([Date]),MONTH([Date]),1))
