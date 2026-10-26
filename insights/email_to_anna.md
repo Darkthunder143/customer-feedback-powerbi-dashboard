@@ -1,16 +1,21 @@
-# Optional email to Anna (send only after you have tested the Power BI build)
+# Email draft - not sent
 
-**Subject:** Customer Feedback Analyst — Power BI portfolio demonstration
+**Subject:** Customer Feedback Analyst - synthetic-data portfolio
 
 Hi Anna,
 
-Thank you again for taking the time to speak with me and for encouraging me to demonstrate my Power BI skills.
+Thank you again for encouraging me to demonstrate my analytical and Power BI skills.
 
-I have put together a small customer-feedback and operational-insights portfolio project using entirely fictional UK bakery retail data. It looks at customer feedback trends, complaint rates adjusted for transaction volumes, and possible links with queue times and stock availability. I've also included an executive summary of example findings and business recommendations.
+I have developed a customer-feedback portfolio using entirely synthetic bakery retail data, combining my quantitative background with my frontline operations experience. It covers transaction-adjusted complaint rates, queue and availability patterns, and practical recommendations with measurable KPIs.
 
-The project and documentation are here: https://github.com/Darkthunder143/customer-feedback-powerbi-dashboard
+The repository includes an analytical briefing, documented calculations and editable native Power BI project source. The native report still needs its final Power BI Desktop refresh and interaction checks, so I am not presenting it as a tested PBIX yet.
 
-I would welcome any feedback you might have, particularly on the types of analysis and visuals your team finds most useful.
+https://github.com/Darkthunder143/customer-feedback-powerbi-dashboard
+
+I would welcome your feedback on the analysis and the measures most useful to your team.
 
 Kind regards,
-Sanket
+Sanket Patel
+
+---
+After all Desktop acceptance checks pass, replace the status paragraph with: "The repository includes the tested Power BI report, dashboard exports, an executive summary and technical validation notes." Only use this wording when those deliverables exist and have been verified.

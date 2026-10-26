@@ -1,58 +1,36 @@
-# Assemble the native interactive Power BI report
+# Finish and verify the native report on Windows
 
-This repository already contains the dataset, build instructions, DAX, Power Query scripts and an independently interactive HTML demo. **It does not contain an actual PBIX file.** A validated `.pbix` must be saved by Power BI Desktop; no tool here can author/test its native format.
+**Prepared source, not a tested PBIX.** This repository includes a native Power BI Project (PBIP) with three PBIR report pages, a TMSL semantic model, Power Query partitions, relationships and DAX measures. Power BI Desktop was unavailable in the authoring environment. Source-schema checks do not establish that Desktop opens or renders it correctly.
 
-## A. Import and clean data (15–20 minutes)
-1. Download the repository ZIP, extract it, and locate the `data` folder.
-2. Open **Power BI Desktop → Transform data → Power Query editor**.
-3. Make a **Text parameter** called `pDataFolder`, e.g. `C:\\Users\\YourName\\Downloads\\customer-feedback-powerbi-dashboard\\data\\` (include trailing slash/backslash).
-4. Create blank queries named **FactFeedback**, **FactOperations**, **DimShop**. In **Advanced Editor**, paste the corresponding files from `powerquery/`.
-5. Verify numeric, date and percentage columns, then **Close & Apply**.
-6. In Modeling → New table, paste the `DimDate` definition from `dax/measures.dax`; mark it as a date table on [Date].
+## Shortest route
 
-## B. Relationships
-- DimShop[shop_id] (1) → FactFeedback[shop_id] (*) **single direction**.
-- DimShop[shop_id] (1) → FactOperations[shop_id] (*) **single direction**.
-- DimDate[Date] (1) → FactFeedback[feedback_date] (*) **single direction**.
-- DimDate[Date] (1) → FactOperations[month_start] (*) **single direction**.
-- Ensure `Month Name` sorts by `Month Number` (or prefer `YearMonth` slicers).
-- **Important:** FactOperations is a monthly table. Compare operations and feedback by *calendar month or year*. Selecting a random individual date will remove monthly operational rows and invalidate transaction-denominator comparisons. For production, build a month-level comparison layer if day-level filtering is required.
+1. Download the repository ZIP and extract it. Use an up-to-date Windows Power BI Desktop with Power BI Project/PBIR support enabled where required by your version.
+2. Open `dashboard/CustomerFeedback/CustomerFeedback.pbip` (or the adjacent Report folder's `definition.pbir`).
+3. **Transform data > Edit parameters:** change `pDataFolder` to the absolute path of your extracted `data` folder, e.g. `C:/Users/YourName/Downloads/customer-feedback-powerbi-dashboard-main/data`. No trailing slash required. Close & Apply, then Refresh. If prompted, use an appropriate local-file privacy level consistently for these synthetic sources.
+4. Run `dax/validation_queries.dax` in DAX Query View, one EVALUATE query at a time. Check the baseline and region/month outputs against `validation/results.json` and `validation/expected_slices.csv`.
+5. Complete the acceptance checklist below, then **File > Save As > Power BI report (.pbix)**: `dashboard/customer_feedback_insights.pbix`. Close, reopen and Refresh that PBIX.
+6. Export PDF using **File > Export > Export to PDF**. Capture each page from the actual report at readable resolution and save as `screenshots/01_native_overview.png`, `02_native_operations.png`, `03_native_recommendations.png`. Commit those files only after successful verification; update README status to tested with your Desktop version and date.
 
-## C. Create DAX measures
-Create each measure, one at a time, using `Modeling → New measure`, and paste individual definitions from `dax/measures.dax`. Set % formats on rate measures. Do not paste the entire text into one measure.
+The three pages and their field bindings are already authored. Import `dashboard/theme.json` under View > Themes > Browse for themes if desired; core page formatting is explicit in the PBIR source.
 
-## D. Build 3 report pages
+## Acceptance checklist (all pending Desktop execution)
 
-### Page 1 — Executive Overview
-- Four KPI cards: Total Feedback, Average CSAT, Negative Feedback %, Complaints per 1K Transactions.
-- Line chart: DimDate[YearMonth] vs Total Feedback.
-- Horizontal bar: FactFeedback[category] vs Total Complaints.
-- Region bar: DimShop[region] vs Complaints per 1K Transactions.
-- Slicers: DimDate[YearMonth], DimShop[region], FactFeedback[feedback_type]. **Caution:** feedback-type slicer affects the complaint/negative-share measures and can skew the executive overview. Use page-specific filter interactions or remove that slicer from KPI cards.
+- [ ] All five tables load; 24 shops, 288 operations rows, 2,438 feedback rows, 12 months and 365 calendar dates. No conversion errors.
+- [ ] Five active 1:* single-direction relationships match `TECHNICAL_DOCUMENTATION.md`. No auto-created fact-to-fact or bidirectional relationship.
+- [ ] Baseline: complaints 1,066; transactions 3,941,570; rate 0.270450607; average CSAT 2.849876948; negative share 43.724364%; open complaints 239.
+- [ ] Choose Scotland and 2026-01 in the synced slicers; compare all cards against the matching CSV oracle row. Repeat two other region/month combinations and a noncontiguous two-month selection.
+- [ ] Select a category: transaction denominator remains all transactions for the selected shops/months; only numerator changes. Clear selection afterwards.
+- [ ] October 2025 previous-month and MoM measures are blank; multi-month MoM total is blank. January 2026 compares against December 2025.
+- [ ] A `DimDate` daily filter blanks operational KPIs, while feedback counts still respond. Use `DimMonth[YearMonth]` on report pages.
+- [ ] Right-click a shop in the overview table > Drill through > Operational Root Cause Analysis. Verify selected shop and retained region/month filters. Clear the ShopFilter in the Filters pane to reset.
+- [ ] Scatter dots represent one shop for the selected period. Select one month for shop-month comparisons. Hover tooltips to verify denominator and context.
+- [ ] Matrix font colour responds to rate: amber >=0.300, teal below; threshold is illustrative. If Desktop requires reapplying this: conditional formatting > Font colour > Field value > `Rate Colour`.
+- [ ] Check chart axes, no clipped text, readable tooltips, keyboard navigation, synced month/region slicers and exact disclaimer on all three pages.
+- [ ] Recommendations' full-period evidence is clearly static; cards respond to filters.
+- [ ] PBIX opens after saving; refresh succeeds; exported PDF and actual screenshots match the report.
 
-### Page 2 — Root Causes
-- Scatter: FactOperations[avg_queue_minutes] on X vs Complaints per 1K Transactions on Y, with Shop and YearMonth as detail grain; monthly store grain is critical.
-- Bar: complaint rate by region and category.
-- Heatmap/matrix: Month × Region with complaint rates.
-- Drill-through: DimShop[shop_label] showing feedback detail table with no real identifiers.
+## Fallback if your Desktop cannot open this PBIP
 
-### Page 3 — Management Actions
-- KPI cards: Total Complaints, Complaint Resolution %, Average Resolved Complaint Hours, Total Transactions.
-- Bar chart with top categories by complaint count.
-- Three short text panels based on `insights/executive_summary.md`.
-- Highlight explicitly that all findings refer to simulated data.
+Do not rename the files to `.pbix`. In a blank report create `pDataFolder` and the five blank queries from `powerquery/` (DimShop, FactOperations, FactFeedback, DimMonth, DimDate). Close & Apply. Create the five relationships in the technical documentation, mark DimDate as the date table, and paste the individual measures from `dax/measures.dax`. The PBIR JSON provides exact page coordinates, visual types and field bindings; `REPORT_SPEC.md` gives the human-readable layout. This fallback requires manual visual assembly.
 
-## E. Report formatting
-Use one background colour, high-contrast readable text, meaningful chart headings, aligned visuals and page navigation. Add a visible footer on every page: **PORTFOLIO DEMONSTRATION · SYNTHETIC DATA · NOT GREGGS CUSTOMER INFORMATION**. Enable useful tooltips, bookmarks or drill-through and test interaction behaviour.
-
-## F. Validate and save
-Expected checks for the checked-in sample data:
-- Shops: 24; shop-month rows: 288; feedback rows: 2438.
-- Total Complaints: 1066; Total Transactions: 3941570.
-- Overall Average CSAT: 2.850; complaint rate per 1k: 0.2705.
-- For any month, ensure the transaction denominator sums *all 24 shop rows* for that month.
-- Test slicers and non-additivity of rates; check blank filter handling.
-- Save as `dashboard/customer_feedback_insights.pbix`. Take real Power BI screenshots and replace the illustrative SVG previews in `screenshots/`.
-
-## G. Sharing safely
-Before sharing publicly, confirm no real customer data, confidential sales data, internal shop identifiers, unpublished documents or proprietary content is present. Do not imply endorsement by Greggs or any other employer.
+Microsoft format references: [PBIP](https://learn.microsoft.com/en-us/power-bi/developer/projects/projects-overview), [report/PBIR](https://learn.microsoft.com/en-us/power-bi/developer/projects/projects-report), [semantic model](https://learn.microsoft.com/en-us/power-bi/developer/projects/projects-dataset).

@@ -9,7 +9,7 @@ All records are fictional. Source period: **1 October 2025 to 30 September 2026*
 | `feedback.csv` | One row per feedback event | 2438 | Fictional comments, CSAT, status and category |
 
 ## Relationships
-`shops.shop_id` (1) → `feedback.shop_id` (many) and `operations.shop_id` (many). A dedicated calendar relates at day grain to `feedback.feedback_date` and on month-start dates to `operations.month_start`. **Compare feedback and operational KPIs at month or year grain**, not at individual day grain, since operational observations are monthly.
+DimShop filters both facts by shop_id. DimMonth filters both facts by month_start (derived from feedback_date in Power Query). DimDate filters feedback only. All comparisons use complete months via DimMonth[YearMonth]; daily DimDate filters intentionally blank transaction-based KPIs. See dashboard/TECHNICAL_DOCUMENTATION.md.
 
 ## Data dictionary
 **Feedback:** `feedback_id`, `feedback_date`, `shop_id`, `feedback_channel` (contact route), `feedback_type` (Complaint / Compliment / Suggestion), `category` (subject), `sentiment` (rule-based fictional classification), `csat_score` (integer 1–5), `severity`, `resolution_status`, `resolution_hours` (empty if open), `product_category`, `order_channel`, `feedback_text` (fictional template).

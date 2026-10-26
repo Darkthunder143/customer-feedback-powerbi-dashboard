@@ -1,0 +1,549 @@
+{
+  "name": "CustomerFeedback",
+  "compatibilityLevel": 1600,
+  "model": {
+    "culture": "en-GB",
+    "defaultPowerBIDataSourceVersion": "powerBI_V3",
+    "sourceQueryCulture": "en-GB",
+    "dataAccessOptions": {
+      "legacyRedirects": true,
+      "returnErrorValuesAsNull": true
+    },
+    "expressions": [
+      {
+        "name": "pDataFolder",
+        "kind": "m",
+        "expression": "\"C:/Portfolio/customer-feedback-powerbi-dashboard/data\" meta [IsParameterQuery=true, Type=\"Text\", IsParameterQueryRequired=true]"
+      }
+    ],
+    "tables": [
+      {
+        "name": "DimShop",
+        "columns": [
+          {
+            "name": "shop_id",
+            "dataType": "string",
+            "sourceColumn": "shop_id",
+            "summarizeBy": "none",
+            "isHidden": true
+          },
+          {
+            "name": "shop_label",
+            "dataType": "string",
+            "sourceColumn": "shop_label",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "city",
+            "dataType": "string",
+            "sourceColumn": "city",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "region",
+            "dataType": "string",
+            "sourceColumn": "region",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "format",
+            "dataType": "string",
+            "sourceColumn": "format",
+            "summarizeBy": "none"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "DimShop",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "// Create a Power Query parameter named pDataFolder (type: Text) containing an absolute path to the downloaded /data folder.",
+                "let",
+                "  Source = Csv.Document(File.Contents(Text.TrimEnd(pDataFolder, {\"/\", \"\\\"}) & \"/\" & \"shops.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),",
+                "  Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),",
+                "  Types = Table.TransformColumnTypes(Headers, {{\"shop_id\", type text}, {\"shop_label\", type text}, {\"city\", type text}, {\"region\", type text}, {\"format\", type text}}, \"en-GB\")",
+                "in",
+                "  Types"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "FactFeedback",
+        "columns": [
+          {
+            "name": "feedback_id",
+            "dataType": "string",
+            "sourceColumn": "feedback_id",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "feedback_date",
+            "dataType": "dateTime",
+            "sourceColumn": "feedback_date",
+            "summarizeBy": "none",
+            "formatString": "yyyy-MM-dd"
+          },
+          {
+            "name": "shop_id",
+            "dataType": "string",
+            "sourceColumn": "shop_id",
+            "summarizeBy": "none",
+            "isHidden": true
+          },
+          {
+            "name": "feedback_channel",
+            "dataType": "string",
+            "sourceColumn": "feedback_channel",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "feedback_type",
+            "dataType": "string",
+            "sourceColumn": "feedback_type",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "category",
+            "dataType": "string",
+            "sourceColumn": "category",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "sentiment",
+            "dataType": "string",
+            "sourceColumn": "sentiment",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "csat_score",
+            "dataType": "int64",
+            "sourceColumn": "csat_score",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "severity",
+            "dataType": "string",
+            "sourceColumn": "severity",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "resolution_status",
+            "dataType": "string",
+            "sourceColumn": "resolution_status",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "resolution_hours",
+            "dataType": "double",
+            "sourceColumn": "resolution_hours",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "product_category",
+            "dataType": "string",
+            "sourceColumn": "product_category",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "order_channel",
+            "dataType": "string",
+            "sourceColumn": "order_channel",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "feedback_text",
+            "dataType": "string",
+            "sourceColumn": "feedback_text",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "month_start",
+            "dataType": "dateTime",
+            "sourceColumn": "month_start",
+            "summarizeBy": "none",
+            "formatString": "yyyy-MM-dd",
+            "isHidden": true
+          }
+        ],
+        "partitions": [
+          {
+            "name": "FactFeedback",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "// Create a Power Query parameter named pDataFolder (type: Text) containing an absolute path to the downloaded /data folder.",
+                "let",
+                "  Source = Csv.Document(File.Contents(Text.TrimEnd(pDataFolder, {\"/\", \"\\\"}) & \"/\" & \"feedback.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),",
+                "  Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),",
+                "  Nulls = Table.ReplaceValue(Headers, \"\", null, Replacer.ReplaceValue, {\"resolution_hours\"}),",
+                "  Types = Table.TransformColumnTypes(Nulls, {{\"feedback_id\", type text}, {\"feedback_date\", type date}, {\"shop_id\", type text}, {\"feedback_channel\", type text}, {\"feedback_type\", type text}, {\"category\", type text}, {\"sentiment\", type text}, {\"csat_score\", Int64.Type}, {\"severity\", type text}, {\"resolution_status\", type text}, {\"resolution_hours\", type number}, {\"product_category\", type text}, {\"order_channel\", type text}, {\"feedback_text\", type text}}, \"en-GB\") ,",
+                "  Month = Table.AddColumn(Types, \"month_start\", each Date.StartOfMonth([feedback_date]), type date)",
+                "in",
+                "  Month"
+              ]
+            }
+          }
+        ],
+        "measures": [
+          {
+            "name": "Total Feedback",
+            "expression": "COALESCE(COUNTROWS(FactFeedback), 0)",
+            "formatString": "0",
+            "displayFolder": "Customer feedback"
+          },
+          {
+            "name": "Total Complaints",
+            "expression": "CALCULATE([Total Feedback], KEEPFILTERS(FactFeedback[feedback_type] = \"Complaint\"))",
+            "formatString": "0",
+            "displayFolder": "Customer feedback"
+          },
+          {
+            "name": "Compliment Count",
+            "expression": "CALCULATE([Total Feedback], KEEPFILTERS(FactFeedback[feedback_type] = \"Compliment\"))",
+            "formatString": "0",
+            "displayFolder": "Customer feedback"
+          },
+          {
+            "name": "Average CSAT",
+            "expression": "AVERAGE(FactFeedback[csat_score])",
+            "formatString": "0.00",
+            "displayFolder": "Customer feedback"
+          },
+          {
+            "name": "Negative Feedback %",
+            "expression": "DIVIDE(CALCULATE([Total Feedback], KEEPFILTERS(FactFeedback[sentiment] = \"Negative\")), [Total Feedback])",
+            "formatString": "0.0%",
+            "displayFolder": "Customer feedback"
+          },
+          {
+            "name": "Total Transactions",
+            "expression": "IF(NOT ISCROSSFILTERED(DimDate), SUM(FactOperations[transactions]))",
+            "formatString": "#,0",
+            "displayFolder": "Operations"
+          },
+          {
+            "name": "Complaints per 1K Transactions",
+            "expression": "DIVIDE([Total Complaints] * 1000, [Total Transactions])",
+            "formatString": "0.000",
+            "displayFolder": "Customer feedback"
+          },
+          {
+            "name": "Feedback per 1K Transactions",
+            "expression": "DIVIDE([Total Feedback] * 1000, [Total Transactions])",
+            "formatString": "0.000",
+            "displayFolder": "Customer feedback"
+          },
+          {
+            "name": "Resolved Complaints",
+            "expression": "CALCULATE([Total Complaints], KEEPFILTERS(FactFeedback[resolution_status] = \"Closed\"))",
+            "formatString": "0",
+            "displayFolder": "Customer feedback"
+          },
+          {
+            "name": "Open Complaints",
+            "expression": "CALCULATE([Total Complaints], KEEPFILTERS(FactFeedback[resolution_status] = \"Open\"))",
+            "formatString": "0",
+            "displayFolder": "Customer feedback"
+          },
+          {
+            "name": "Complaint Resolution %",
+            "expression": "DIVIDE([Resolved Complaints], [Total Complaints])",
+            "formatString": "0.0%",
+            "displayFolder": "Customer feedback"
+          },
+          {
+            "name": "Average Resolved Complaint Hours",
+            "expression": "CALCULATE(AVERAGE(FactFeedback[resolution_hours]), KEEPFILTERS(FactFeedback[feedback_type] = \"Complaint\"), KEEPFILTERS(FactFeedback[resolution_status] = \"Closed\"))",
+            "formatString": "0.0",
+            "displayFolder": "Customer feedback"
+          },
+          {
+            "name": "Average Queue Minutes",
+            "expression": "DIVIDE(SUMX(FactOperations, FactOperations[avg_queue_minutes] * FactOperations[transactions]), [Total Transactions])",
+            "formatString": "0.00",
+            "displayFolder": "Operations"
+          },
+          {
+            "name": "Stock Availability %",
+            "expression": "DIVIDE(SUMX(FactOperations, FactOperations[stock_availability_pct] * FactOperations[transactions]), [Total Transactions])",
+            "formatString": "0.0%",
+            "displayFolder": "Operations"
+          },
+          {
+            "name": "Months Selected",
+            "expression": "COUNTROWS(VALUES(DimMonth[MonthStart]))",
+            "formatString": "0",
+            "displayFolder": "Context"
+          },
+          {
+            "name": "Complaints Prior Month",
+            "expression": "VAR CurrentMonth = SELECTEDVALUE(DimMonth[MonthStart])\nRETURN IF(NOT ISBLANK(CurrentMonth) && NOT ISCROSSFILTERED(DimDate),\n CALCULATE([Total Complaints], REMOVEFILTERS(DimMonth), DimMonth[MonthStart] = EDATE(CurrentMonth, -1),\n KEEPFILTERS(FactFeedback[feedback_type] = \"Complaint\")) *\n IF(CALCULATE(COUNTROWS(FactOperations), REMOVEFILTERS(DimMonth), DimMonth[MonthStart] = EDATE(CurrentMonth, -1)) > 0, 1, BLANK()))",
+            "formatString": "0",
+            "displayFolder": "Time intelligence"
+          },
+          {
+            "name": "Complaints MoM %",
+            "expression": "DIVIDE([Total Complaints] - [Complaints Prior Month], [Complaints Prior Month])",
+            "formatString": "0.0%",
+            "displayFolder": "Time intelligence"
+          },
+          {
+            "name": "Waiting Complaints per 1K",
+            "expression": "CALCULATE([Complaints per 1K Transactions], KEEPFILTERS(FactFeedback[category] = \"Waiting time\"))",
+            "formatString": "0.000",
+            "displayFolder": "Customer feedback"
+          },
+          {
+            "name": "Availability Complaints per 1K",
+            "expression": "CALCULATE([Complaints per 1K Transactions], KEEPFILTERS(FactFeedback[category] = \"Product availability\"))",
+            "formatString": "0.000",
+            "displayFolder": "Customer feedback"
+          },
+          {
+            "name": "Rate Colour",
+            "expression": "IF(ISBLANK([Complaints per 1K Transactions]), \"#64748B\", IF([Complaints per 1K Transactions] >= 0.3, \"#B45309\", \"#147D78\"))",
+            "formatString": "",
+            "displayFolder": "Presentation"
+          },
+          {
+            "name": "Period Note",
+            "expression": "IF(ISCROSSFILTERED(DimDate), \"Daily filter active: operational rates unavailable. Use Month slicer.\", \"Whole-month comparison | selected months: \" & FORMAT([Months Selected], \"0\"))",
+            "formatString": "",
+            "displayFolder": "Context"
+          }
+        ]
+      },
+      {
+        "name": "FactOperations",
+        "columns": [
+          {
+            "name": "shop_id",
+            "dataType": "string",
+            "sourceColumn": "shop_id",
+            "summarizeBy": "none",
+            "isHidden": true
+          },
+          {
+            "name": "month_start",
+            "dataType": "dateTime",
+            "sourceColumn": "month_start",
+            "summarizeBy": "none",
+            "formatString": "yyyy-MM-dd",
+            "isHidden": true
+          },
+          {
+            "name": "transactions",
+            "dataType": "int64",
+            "sourceColumn": "transactions",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "avg_queue_minutes",
+            "dataType": "double",
+            "sourceColumn": "avg_queue_minutes",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "stock_availability_pct",
+            "dataType": "double",
+            "sourceColumn": "stock_availability_pct",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "avg_basket_gbp",
+            "dataType": "double",
+            "sourceColumn": "avg_basket_gbp",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "staffing_hours",
+            "dataType": "int64",
+            "sourceColumn": "staffing_hours",
+            "summarizeBy": "none"
+          },
+          {
+            "name": "on_time_online_orders_pct",
+            "dataType": "double",
+            "sourceColumn": "on_time_online_orders_pct",
+            "summarizeBy": "none"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "FactOperations",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "// Create a Power Query parameter named pDataFolder (type: Text) containing an absolute path to the downloaded /data folder.",
+                "let",
+                "  Source = Csv.Document(File.Contents(Text.TrimEnd(pDataFolder, {\"/\", \"\\\"}) & \"/\" & \"operations.csv\"), [Delimiter=\",\", Encoding=65001, QuoteStyle=QuoteStyle.Csv]),",
+                "  Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),",
+                "  Types = Table.TransformColumnTypes(Headers, {{\"shop_id\", type text}, {\"month_start\", type date}, {\"transactions\", Int64.Type}, {\"avg_queue_minutes\", type number}, {\"stock_availability_pct\", type number}, {\"avg_basket_gbp\", type number}, {\"staffing_hours\", type number}, {\"on_time_online_orders_pct\", type number}}, \"en-GB\")",
+                "in",
+                "  Types"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "DimMonth",
+        "columns": [
+          {
+            "name": "MonthStart",
+            "dataType": "dateTime",
+            "sourceColumn": "MonthStart",
+            "summarizeBy": "none",
+            "formatString": "yyyy-MM-dd"
+          },
+          {
+            "name": "YearMonth",
+            "dataType": "string",
+            "sourceColumn": "YearMonth",
+            "summarizeBy": "none",
+            "sortByColumn": "MonthStart"
+          },
+          {
+            "name": "Year",
+            "dataType": "int64",
+            "sourceColumn": "Year",
+            "summarizeBy": "none"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "DimMonth",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "  First = List.Min(FactOperations[month_start]),",
+                "  Last = List.Max(FactOperations[month_start]),",
+                "  Months = List.Generate(() => First, each _ <= Last, each Date.AddMonths(_, 1)),",
+                "  Base = Table.FromList(Months, Splitter.SplitByNothing(), {\"MonthStart\"}),",
+                "  Types = Table.TransformColumnTypes(Base, {{\"MonthStart\", type date}}),",
+                "  Labels = Table.AddColumn(Types, \"YearMonth\", each Date.ToText([MonthStart], \"yyyy-MM\"), type text),",
+                "  Year = Table.AddColumn(Labels, \"Year\", each Date.Year([MonthStart]), Int64.Type)",
+                "in",
+                "  Year"
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "name": "DimDate",
+        "columns": [
+          {
+            "name": "Date",
+            "dataType": "dateTime",
+            "sourceColumn": "Date",
+            "summarizeBy": "none",
+            "formatString": "yyyy-MM-dd",
+            "isKey": true
+          },
+          {
+            "name": "MonthStart",
+            "dataType": "dateTime",
+            "sourceColumn": "MonthStart",
+            "summarizeBy": "none",
+            "formatString": "yyyy-MM-dd",
+            "isHidden": true
+          },
+          {
+            "name": "YearMonth",
+            "dataType": "string",
+            "sourceColumn": "YearMonth",
+            "summarizeBy": "none"
+          }
+        ],
+        "partitions": [
+          {
+            "name": "DimDate",
+            "mode": "import",
+            "source": {
+              "type": "m",
+              "expression": [
+                "let",
+                "  First = List.Min(DimMonth[MonthStart]),",
+                "  Last = Date.EndOfMonth(List.Max(DimMonth[MonthStart])),",
+                "  Dates = List.Dates(First, Duration.Days(Last - First) + 1, #duration(1,0,0,0)),",
+                "  Base = Table.FromList(Dates, Splitter.SplitByNothing(), {\"Date\"}),",
+                "  Types = Table.TransformColumnTypes(Base, {{\"Date\", type date}}),",
+                "  Month = Table.AddColumn(Types, \"MonthStart\", each Date.StartOfMonth([Date]), type date),",
+                "  Labels = Table.AddColumn(Month, \"YearMonth\", each Date.ToText([Date], \"yyyy-MM\"), type text)",
+                "in",
+                "  Labels"
+              ]
+            }
+          }
+        ],
+        "dataCategory": "Time"
+      }
+    ],
+    "relationships": [
+      {
+        "name": "FactFeedback_DimShop",
+        "fromTable": "FactFeedback",
+        "fromColumn": "shop_id",
+        "toTable": "DimShop",
+        "toColumn": "shop_id",
+        "crossFilteringBehavior": "oneDirection",
+        "fromCardinality": "many",
+        "toCardinality": "one",
+        "isActive": true
+      },
+      {
+        "name": "FactOperations_DimShop",
+        "fromTable": "FactOperations",
+        "fromColumn": "shop_id",
+        "toTable": "DimShop",
+        "toColumn": "shop_id",
+        "crossFilteringBehavior": "oneDirection",
+        "fromCardinality": "many",
+        "toCardinality": "one",
+        "isActive": true
+      },
+      {
+        "name": "FactFeedback_DimMonth",
+        "fromTable": "FactFeedback",
+        "fromColumn": "month_start",
+        "toTable": "DimMonth",
+        "toColumn": "MonthStart",
+        "crossFilteringBehavior": "oneDirection",
+        "fromCardinality": "many",
+        "toCardinality": "one",
+        "isActive": true
+      },
+      {
+        "name": "FactOperations_DimMonth",
+        "fromTable": "FactOperations",
+        "fromColumn": "month_start",
+        "toTable": "DimMonth",
+        "toColumn": "MonthStart",
+        "crossFilteringBehavior": "oneDirection",
+        "fromCardinality": "many",
+        "toCardinality": "one",
+        "isActive": true
+      },
+      {
+        "name": "FactFeedback_DimDate",
+        "fromTable": "FactFeedback",
+        "fromColumn": "feedback_date",
+        "toTable": "DimDate",
+        "toColumn": "Date",
+        "crossFilteringBehavior": "oneDirection",
+        "fromCardinality": "many",
+        "toCardinality": "one",
+        "isActive": true
+      }
+    ]
+  }
+}

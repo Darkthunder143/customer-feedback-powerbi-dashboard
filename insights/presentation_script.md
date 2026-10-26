@@ -1,11 +1,25 @@
-# 90-second walkthrough script
+# Two-minute demonstration script
 
-“Thank you for encouraging me to practise Power BI. I created a small end-to-end customer feedback portfolio project using **only synthetic data**. It doesn't use any Greggs records. The idea was to combine the data skills from my theoretical physics background with the practical customer experience I've gained as a shift manager.
+Approximately 260 words. Current version honestly presents the source project and analytical briefing. Use native report interactions only after Desktop acceptance checks pass.
 
-The first page is an executive overview: feedback volume, customer satisfaction, negative feedback and complaints normalised per 1,000 transactions. Rather than just showing the number of complaints, the denominator helps compare shops with different trading volumes.
+**0:00-0:25 | Purpose**
 
-On the second page, I explored whether operational indicators such as queue duration and stock availability coincide with complaint rates. These relationships are deliberately simulated, so I'm careful not to claim causation. With real data, I'd want to validate the pattern with shop teams and check other explanations.
+Thank you, Anna, for encouraging me to demonstrate my analytical skills. I have developed this customer-feedback portfolio using entirely synthetic data. It combines the quantitative approach from my MSc in Theoretical Physics with the customer-service perspective I have gained as a shift manager. It contains no Greggs customer or operational records.
 
-The third page turns the analysis into possible actions: monitoring peak-hour queues, investigating replenishment issues and tracking category trends month by month. I also documented the model, DAX measures and assumptions so the work can be reviewed and rebuilt.
+**0:25-0:55 | Overview**
 
-I'd really value your feedback on which KPIs and Power BI features would be most useful in your team's actual workflow.”
+The first view summarises 2,438 feedback events across 24 fictional shops. There are 1,066 complaints, or 0.270 per thousand transactions. I use transaction exposure because raw complaint counts can penalise busier shops. The model compares complete months, so daily feedback is not accidentally divided by a monthly denominator. Region and month selections have independently calculated expected results for checking in Desktop.
+
+**0:55-1:25 | Investigation**
+
+Waiting time and availability together represent 56% of complaints. Higher-queue shop-months have higher complaint rates, as do shop-months with lower availability. These relationships were programmed into the synthetic generator; they are not evidence about Greggs and do not prove causation. In real analysis, I would check daypart, staffing, product mix and reporting bias, and discuss the comments with shop teams.
+
+**1:25-1:50 | Decisions**
+
+My recommendations are a queue-monitoring pilot, an exception-led replenishment review and clearer ownership of open complaints. Each has a KPI and a guardrail, such as order accuracy, waste or closure quality. I would establish a baseline and compare matched shops before recommending wider rollout.
+
+**1:50-2:00 | Status and question**
+
+The native project source and validation evidence are documented; Desktop verification remains the final step. Which measures would be most useful to your team's decisions?
+
+After successful Desktop checks, replace the final status sentence with a factual description of the tested report and demonstrate month/region selection, shop drill-through and reset. Do not make that change beforehand.

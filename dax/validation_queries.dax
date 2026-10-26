@@ -1,0 +1,13 @@
+// Run in Power BI Desktop DAX Query View AFTER Refresh. Compare validation/expected_slices.csv.
+EVALUATE ROW("Feedback", [Total Feedback], "Complaints", [Total Complaints], "CSAT", [Average CSAT], "Transactions", [Total Transactions], "Rate", [Complaints per 1K Transactions], "Open", [Open Complaints])
+
+EVALUATE SUMMARIZECOLUMNS(DimShop[region], DimMonth[YearMonth], "Feedback", [Total Feedback], "Complaints", [Total Complaints], "Transactions", [Total Transactions], "Rate", [Complaints per 1K Transactions])
+
+// Must return BLANK for Transactions and Rate; daily feedback remains valid.
+EVALUATE CALCULATETABLE(ROW("Transactions", [Total Transactions], "Rate", [Complaints per 1K Transactions], "Feedback", [Total Feedback]), TREATAS({DATE(2026,1,15)}, DimDate[Date]))
+
+// No complaint should appear under a Compliment filter (KEEPFILTERS).
+EVALUATE CALCULATETABLE(ROW("Complaints", [Total Complaints]), TREATAS({"Compliment"}, FactFeedback[feedback_type]))
+
+// October 2025 has no baseline; multi-month total also has no single prior month.
+EVALUATE SUMMARIZECOLUMNS(DimMonth[YearMonth], "Prior", [Complaints Prior Month], "MoM", [Complaints MoM %])

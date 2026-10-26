@@ -1,0 +1,107 @@
+{
+  "status": "PASS - independent Python data and arithmetic checks, NOT DAX/M engine execution",
+  "checks_passed": 425,
+  "baseline": {
+    "feedback": 2438,
+    "complaints": 1066,
+    "transactions": 3941570,
+    "csat": 2.8498769483182937,
+    "negative_share": 0.4372436423297785,
+    "rate": 0.27045060724533626,
+    "open": 239,
+    "closed": 827,
+    "resolution_share": 0.775797373358349,
+    "resolved_hours": 55.46553808948005,
+    "queue": 5.487418990402301,
+    "stock": 0.9329556970953199
+  },
+  "segments": {
+    "queue_ge6": {
+      "shop_months": 116,
+      "feedback": 977,
+      "complaints": 529,
+      "transactions": 1642607,
+      "csat": 2.534288638689867,
+      "negative_share": 0.5414534288638689,
+      "rate": 0.32204903546618274,
+      "open": 119,
+      "closed": 410,
+      "resolution_share": 0.775047258979206,
+      "resolved_hours": 54.4970731707317,
+      "queue": 7.058559381519743,
+      "stock": 0.9313099132659243
+    },
+    "queue_lt6": {
+      "shop_months": 172,
+      "feedback": 1461,
+      "complaints": 537,
+      "transactions": 2298963,
+      "csat": 3.060917180013689,
+      "negative_share": 0.3675564681724846,
+      "rate": 0.2335835765951866,
+      "open": 120,
+      "closed": 417,
+      "resolution_share": 0.776536312849162,
+      "resolved_hours": 56.41774580335731,
+      "queue": 4.364840591170888,
+      "stock": 0.9341316081642028
+    },
+    "stock_lt93": {
+      "shop_months": 135,
+      "feedback": 1155,
+      "complaints": 581,
+      "transactions": 1883034,
+      "csat": 2.653679653679654,
+      "negative_share": 0.503030303030303,
+      "rate": 0.3085446147015933,
+      "open": 141,
+      "closed": 440,
+      "resolution_share": 0.7573149741824441,
+      "resolved_hours": 54.433181818181815,
+      "queue": 5.418517089972884,
+      "stock": 0.9021013852113132
+    },
+    "stock_ge93": {
+      "shop_months": 153,
+      "feedback": 1283,
+      "complaints": 485,
+      "transactions": 2058536,
+      "csat": 3.0265003897116136,
+      "negative_share": 0.3780202650038971,
+      "rate": 0.23560433239933623,
+      "open": 98,
+      "closed": 387,
+      "resolution_share": 0.797938144329897,
+      "resolved_hours": 56.639276485788116,
+      "queue": 5.550446608657803,
+      "stock": 0.9611795019372991
+    }
+  },
+  "pearson_shop_month": {
+    "avg_queue_minutes": 0.3101675961997869,
+    "stock_availability_pct": -0.27513844053455344
+  },
+  "categories": {
+    "Food quality": 124,
+    "Waiting time": 342,
+    "Staff service": 109,
+    "Digital ordering": 60,
+    "Product availability": 256,
+    "Order accuracy": 128,
+    "Cleanliness": 47
+  },
+  "sha256": {
+    "feedback.csv": "16dd16b04e257be10bea285426b39eaf18398ec4661cb0ab9f37cbf74d1a9ba7",
+    "operations.csv": "a1e3e9115bdab7e2b09db692d8ffe8eb85a5fffcd602c277f92c52dcf7bcbe75",
+    "shops.csv": "c07a3fbd3e71b2f67d2c341af3b042b7c08e6dd820fca6848175da20a72aadef"
+  },
+  "pending": [
+    "Power Query refresh",
+    "DAX query execution",
+    "PBIP opening in Desktop",
+    "Slicer and drillthrough interactions",
+    "Conditional formatting rendering",
+    "PBIX save and reopen",
+    "Native screenshots and PDF export"
+  ]
+}

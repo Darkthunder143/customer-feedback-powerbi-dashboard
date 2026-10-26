@@ -1,0 +1,128 @@
+[
+  {
+    "name": "Total Feedback",
+    "expression": "COALESCE(COUNTROWS(FactFeedback), 0)",
+    "formatString": "0",
+    "displayFolder": "Customer feedback"
+  },
+  {
+    "name": "Total Complaints",
+    "expression": "CALCULATE([Total Feedback], KEEPFILTERS(FactFeedback[feedback_type] = \"Complaint\"))",
+    "formatString": "0",
+    "displayFolder": "Customer feedback"
+  },
+  {
+    "name": "Compliment Count",
+    "expression": "CALCULATE([Total Feedback], KEEPFILTERS(FactFeedback[feedback_type] = \"Compliment\"))",
+    "formatString": "0",
+    "displayFolder": "Customer feedback"
+  },
+  {
+    "name": "Average CSAT",
+    "expression": "AVERAGE(FactFeedback[csat_score])",
+    "formatString": "0.00",
+    "displayFolder": "Customer feedback"
+  },
+  {
+    "name": "Negative Feedback %",
+    "expression": "DIVIDE(CALCULATE([Total Feedback], KEEPFILTERS(FactFeedback[sentiment] = \"Negative\")), [Total Feedback])",
+    "formatString": "0.0%",
+    "displayFolder": "Customer feedback"
+  },
+  {
+    "name": "Total Transactions",
+    "expression": "IF(NOT ISCROSSFILTERED(DimDate), SUM(FactOperations[transactions]))",
+    "formatString": "#,0",
+    "displayFolder": "Operations"
+  },
+  {
+    "name": "Complaints per 1K Transactions",
+    "expression": "DIVIDE([Total Complaints] * 1000, [Total Transactions])",
+    "formatString": "0.000",
+    "displayFolder": "Customer feedback"
+  },
+  {
+    "name": "Feedback per 1K Transactions",
+    "expression": "DIVIDE([Total Feedback] * 1000, [Total Transactions])",
+    "formatString": "0.000",
+    "displayFolder": "Customer feedback"
+  },
+  {
+    "name": "Resolved Complaints",
+    "expression": "CALCULATE([Total Complaints], KEEPFILTERS(FactFeedback[resolution_status] = \"Closed\"))",
+    "formatString": "0",
+    "displayFolder": "Customer feedback"
+  },
+  {
+    "name": "Open Complaints",
+    "expression": "CALCULATE([Total Complaints], KEEPFILTERS(FactFeedback[resolution_status] = \"Open\"))",
+    "formatString": "0",
+    "displayFolder": "Customer feedback"
+  },
+  {
+    "name": "Complaint Resolution %",
+    "expression": "DIVIDE([Resolved Complaints], [Total Complaints])",
+    "formatString": "0.0%",
+    "displayFolder": "Customer feedback"
+  },
+  {
+    "name": "Average Resolved Complaint Hours",
+    "expression": "CALCULATE(AVERAGE(FactFeedback[resolution_hours]), KEEPFILTERS(FactFeedback[feedback_type] = \"Complaint\"), KEEPFILTERS(FactFeedback[resolution_status] = \"Closed\"))",
+    "formatString": "0.0",
+    "displayFolder": "Customer feedback"
+  },
+  {
+    "name": "Average Queue Minutes",
+    "expression": "DIVIDE(SUMX(FactOperations, FactOperations[avg_queue_minutes] * FactOperations[transactions]), [Total Transactions])",
+    "formatString": "0.00",
+    "displayFolder": "Operations"
+  },
+  {
+    "name": "Stock Availability %",
+    "expression": "DIVIDE(SUMX(FactOperations, FactOperations[stock_availability_pct] * FactOperations[transactions]), [Total Transactions])",
+    "formatString": "0.0%",
+    "displayFolder": "Operations"
+  },
+  {
+    "name": "Months Selected",
+    "expression": "COUNTROWS(VALUES(DimMonth[MonthStart]))",
+    "formatString": "0",
+    "displayFolder": "Context"
+  },
+  {
+    "name": "Complaints Prior Month",
+    "expression": "VAR CurrentMonth = SELECTEDVALUE(DimMonth[MonthStart])\nRETURN IF(NOT ISBLANK(CurrentMonth) && NOT ISCROSSFILTERED(DimDate),\n CALCULATE([Total Complaints], REMOVEFILTERS(DimMonth), DimMonth[MonthStart] = EDATE(CurrentMonth, -1),\n KEEPFILTERS(FactFeedback[feedback_type] = \"Complaint\")) *\n IF(CALCULATE(COUNTROWS(FactOperations), REMOVEFILTERS(DimMonth), DimMonth[MonthStart] = EDATE(CurrentMonth, -1)) > 0, 1, BLANK()))",
+    "formatString": "0",
+    "displayFolder": "Time intelligence"
+  },
+  {
+    "name": "Complaints MoM %",
+    "expression": "DIVIDE([Total Complaints] - [Complaints Prior Month], [Complaints Prior Month])",
+    "formatString": "0.0%",
+    "displayFolder": "Time intelligence"
+  },
+  {
+    "name": "Waiting Complaints per 1K",
+    "expression": "CALCULATE([Complaints per 1K Transactions], KEEPFILTERS(FactFeedback[category] = \"Waiting time\"))",
+    "formatString": "0.000",
+    "displayFolder": "Customer feedback"
+  },
+  {
+    "name": "Availability Complaints per 1K",
+    "expression": "CALCULATE([Complaints per 1K Transactions], KEEPFILTERS(FactFeedback[category] = \"Product availability\"))",
+    "formatString": "0.000",
+    "displayFolder": "Customer feedback"
+  },
+  {
+    "name": "Rate Colour",
+    "expression": "IF(ISBLANK([Complaints per 1K Transactions]), \"#64748B\", IF([Complaints per 1K Transactions] >= 0.3, \"#B45309\", \"#147D78\"))",
+    "formatString": "",
+    "displayFolder": "Presentation"
+  },
+  {
+    "name": "Period Note",
+    "expression": "IF(ISCROSSFILTERED(DimDate), \"Daily filter active: operational rates unavailable. Use Month slicer.\", \"Whole-month comparison | selected months: \" & FORMAT([Months Selected], \"0\"))",
+    "formatString": "",
+    "displayFolder": "Context"
+  }
+]

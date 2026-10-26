@@ -1,33 +1,17 @@
-# Executive insight brief — hypothetical bakery retail
+# Executive summary | Customer feedback portfolio
 
-**Portfolio demonstration. Synthetic data, not Greggs customer or operational information.** Period: 1 October 2025–30 September 2026.
+**Portfolio Demonstration | Synthetic Data | Not Actual Greggs Customer Information**
 
-## Executive KPIs
+Sanket Patel | MSc Theoretical Physics, University of Edinburgh | Retail operations perspective
 
-| KPI | Result |
-|---|---:|
-| Fictional shops | 24 |
-| Feedback records | 2,438 |
-| Complaints | 1,066 |
-| Average CSAT | 2.85/5 |
-| Fictional transactions | 3,941,570 |
-| Complaints per 1,000 transactions | 0.27 |
-| Complaints closed | 77.6% |
+**Scope:** 24 fictional shops, October 2025-September 2026. 2,438 feedback events; 1,066 complaints; 3,941,570 transactions. Average feedback CSAT is 2.85/5, negative feedback share 43.7%, and complaint rate 0.270 per 1,000 transactions. These are feedback-sample measures, not estimates of all customers' satisfaction.
 
-## Three observable findings
+**1. Waiting friction.** Waiting time accounts for 342 complaints (32.1%). Shop-months with queues >=6 minutes have 0.322 complaints per 1,000 transactions versus 0.234 below 6 minutes. Investigate demand peaks, order mix and staff task allocation. Pilot peak-hour queue monitoring with matched comparison shops. Track waiting-time complaints/1,000 and transaction-weighted queue minutes; protect order accuracy and labour hours.
 
-1. **Leading complaint theme:** Waiting time (342 fictional complaint events), followed by Product availability (256). This points to categories worth reviewing in a *real* customer feedback system.
-2. **Queue-time association:** In fictional shop-months with average queue time ≥6 minutes, the complaint rate is 0.32 per 1,000 transactions; in those below 6 minutes it is 0.23. This is a designed association in sample data, not evidence that longer queues caused complaints in real shops.
-3. **Stock availability association:** Fictional shop-months with stock availability <93% have 0.31 complaints per 1,000 transactions, versus 0.24 where availability is ≥93%. This suggests an example diagnostic segmentation.
+**2. Availability gaps.** Product availability accounts for 256 complaints (24.0%). Shop-months below 93% availability show 0.309 complaints/1,000 versus 0.236 at or above 93%. Investigate SKU/daypart shortages, replenishment timing and forecast misses. Trial an exception-led replenishment review. Track availability complaints/1,000 and stock availability, alongside waste and markdown cost.
 
-## Proposed operational actions
+**3. Complaint follow-up.** 239 complaints are open; 77.6% are closed. Closed complaints average 55.5 hours to resolution. Review case ownership, complexity, severity and closure quality before interpreting speed. Introduce weekly triage with named owners. Track open-case count, closure share and closed-case hours; add case-age and reopen data before setting an SLA or claiming overdue cases.
 
-| Action | Why | Check success with |
-|---|---|---|
-| Trial a peak-hour queue monitoring protocol | Queue patterns may merit investigation | Average queue minutes; waiting-time complaints per 1,000 transactions |
-| Review product replenishment exceptions | Stock-related dissatisfaction may be actionable | Stock availability %; availability complaint rate |
-| Publish a recurring feedback category scorecard | Spot clusters before they become persistent | Complaint category trend, complaints per 1,000 transactions |
+**Decision:** agree metric definitions and a baseline, then run a proposed four-week pilot with weekly review and matched shop comparisons. Do not promise a quantified uplift from this dataset.
 
-**Analytical caveat:** Data are artificially generated. Confounding factors, customer-selection bias, incomplete reporting and unmeasured operational variables mean correlation cannot establish cause. Any operational recommendation would require validation using properly governed live business data, shop context and qualitative investigation.
-
-**Safety / integrity:** This is a wholly fictional UK bakery dataset generated for learning. It contains no Greggs systems data, real feedback, customer information, internal sales or operational records. It does not imply Greggs endorsement. All causal interpretations require real-world validation.
+**Limits and status:** the generator deliberately programs queue/stock associations and fixes small feedback samples independently of transaction volume. Correlation cannot prove causation. Native PBIP source is prepared; PBIX creation, refresh, DAX execution and interactions require Power BI Desktop acceptance testing. No official endorsement is implied.

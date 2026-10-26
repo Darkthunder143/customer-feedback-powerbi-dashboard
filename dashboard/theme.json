@@ -1,0 +1,28 @@
+{
+  "name": "Customer Insight - Slate and Teal",
+  "dataColors": [
+    "#147D78",
+    "#244969",
+    "#D19737",
+    "#78899C",
+    "#9ABCB8",
+    "#AC6651"
+  ],
+  "background": "#F4F7FA",
+  "foreground": "#152D43",
+  "tableAccent": "#147D78",
+  "textClasses": {
+    "title": {
+      "fontFace": "Segoe UI",
+      "fontSize": 16
+    },
+    "label": {
+      "fontFace": "Segoe UI",
+      "fontSize": 11
+    },
+    "callout": {
+      "fontFace": "Segoe UI",
+      "fontSize": 30
+    }
+  }
+}

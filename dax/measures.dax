@@ -1,35 +1,47 @@
-// Paste each measure separately into Power BI Desktop: Modeling > New measure.
-// Tables: FactFeedback, FactOperations, DimShop, DimDate. Use month/year filters for cross-fact comparison.
+// Paste measures separately if using manual fallback. DimMonth filters both facts.
 
-Total Feedback = COUNTROWS(FactFeedback)
+Total Feedback = COALESCE(COUNTROWS(FactFeedback), 0)
 
-Total Complaints = CALCULATE([Total Feedback], FactFeedback[feedback_type] = "Complaint")
+Total Complaints = CALCULATE([Total Feedback], KEEPFILTERS(FactFeedback[feedback_type] = "Complaint"))
 
-Compliment Count = CALCULATE([Total Feedback], FactFeedback[feedback_type] = "Compliment")
+Compliment Count = CALCULATE([Total Feedback], KEEPFILTERS(FactFeedback[feedback_type] = "Compliment"))
 
 Average CSAT = AVERAGE(FactFeedback[csat_score])
 
-Negative Feedback % = DIVIDE([Total Complaints], [Total Feedback])
+Negative Feedback % = DIVIDE(CALCULATE([Total Feedback], KEEPFILTERS(FactFeedback[sentiment] = "Negative")), [Total Feedback])
 
-Total Transactions = SUM(FactOperations[transactions])
+Total Transactions = IF(NOT ISCROSSFILTERED(DimDate), SUM(FactOperations[transactions]))
 
-Complaints per 1K Transactions = DIVIDE([Total Complaints], [Total Transactions]) * 1000
+Complaints per 1K Transactions = DIVIDE([Total Complaints] * 1000, [Total Transactions])
 
-Feedback per 1K Transactions = DIVIDE([Total Feedback], [Total Transactions]) * 1000
+Feedback per 1K Transactions = DIVIDE([Total Feedback] * 1000, [Total Transactions])
 
-Resolved Complaints = CALCULATE([Total Complaints], FactFeedback[resolution_status] = "Closed")
+Resolved Complaints = CALCULATE([Total Complaints], KEEPFILTERS(FactFeedback[resolution_status] = "Closed"))
+
+Open Complaints = CALCULATE([Total Complaints], KEEPFILTERS(FactFeedback[resolution_status] = "Open"))
 
 Complaint Resolution % = DIVIDE([Resolved Complaints], [Total Complaints])
 
-Average Resolved Complaint Hours = CALCULATE(AVERAGE(FactFeedback[resolution_hours]), FactFeedback[feedback_type] = "Complaint", FactFeedback[resolution_status] = "Closed")
+Average Resolved Complaint Hours = CALCULATE(AVERAGE(FactFeedback[resolution_hours]), KEEPFILTERS(FactFeedback[feedback_type] = "Complaint"), KEEPFILTERS(FactFeedback[resolution_status] = "Closed"))
 
 Average Queue Minutes = DIVIDE(SUMX(FactOperations, FactOperations[avg_queue_minutes] * FactOperations[transactions]), [Total Transactions])
 
 Stock Availability % = DIVIDE(SUMX(FactOperations, FactOperations[stock_availability_pct] * FactOperations[transactions]), [Total Transactions])
 
-Complaints Prior Month = CALCULATE([Total Complaints], DATEADD(DimDate[Date], -1, MONTH))
+Months Selected = COUNTROWS(VALUES(DimMonth[MonthStart]))
+
+Complaints Prior Month = VAR CurrentMonth = SELECTEDVALUE(DimMonth[MonthStart])
+RETURN IF(NOT ISBLANK(CurrentMonth) && NOT ISCROSSFILTERED(DimDate),
+ CALCULATE([Total Complaints], REMOVEFILTERS(DimMonth), DimMonth[MonthStart] = EDATE(CurrentMonth, -1),
+ KEEPFILTERS(FactFeedback[feedback_type] = "Complaint")) *
+ IF(CALCULATE(COUNTROWS(FactOperations), REMOVEFILTERS(DimMonth), DimMonth[MonthStart] = EDATE(CurrentMonth, -1)) > 0, 1, BLANK()))
 
 Complaints MoM % = DIVIDE([Total Complaints] - [Complaints Prior Month], [Complaints Prior Month])
 
-// Calculated table (Modeling > New table). In Power Query set date fields to Date.
-DimDate = ADDCOLUMNS(CALENDAR(DATE(2025,10,1),DATE(2026,9,30)), "Year", YEAR([Date]), "Month Number", MONTH([Date]), "Month Name", FORMAT([Date], "MMM"), "YearMonth", FORMAT([Date], "yyyy-MM"), "MonthStart", DATE(YEAR([Date]),MONTH([Date]),1))
+Waiting Complaints per 1K = CALCULATE([Complaints per 1K Transactions], KEEPFILTERS(FactFeedback[category] = "Waiting time"))
+
+Availability Complaints per 1K = CALCULATE([Complaints per 1K Transactions], KEEPFILTERS(FactFeedback[category] = "Product availability"))
+
+Rate Colour = IF(ISBLANK([Complaints per 1K Transactions]), "#64748B", IF([Complaints per 1K Transactions] >= 0.3, "#B45309", "#147D78"))
+
+Period Note = IF(ISCROSSFILTERED(DimDate), "Daily filter active: operational rates unavailable. Use Month slicer.", "Whole-month comparison | selected months: " & FORMAT([Months Selected], "0"))
